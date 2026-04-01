@@ -1,261 +1,350 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>賣家管理後台</title>
+<title>TWT · 賣家管理後台</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
+/* ══ THEME SYSTEM ══ */
 :root {
-  --bg:#0f0f13; --s1:#17171f; --s2:#1e1e2a; --s3:#252533;
-  --border:#2a2a3a; --border-hi:rgba(139,92,246,.45);
-  --p:#8b5cf6; --p-hi:#a78bfa; --p-dim:rgba(139,92,246,.12);
-  --green:#10b981; --green-dim:rgba(16,185,129,.12);
-  --red:#ef4444; --red-dim:rgba(239,68,68,.12);
-  --yellow:#f59e0b; --yellow-dim:rgba(245,158,11,.12);
-  --blue:#3b82f6; --blue-dim:rgba(59,130,246,.12);
-  --text:#f1f0f8; --mid:#9b93c0; --dim:#4e4870;
-  --r:12px; --r-sm:8px; --r-xs:6px;
-  --mono:'JetBrains Mono',monospace;
+  --font-display:'Outfit','Noto Sans TC',sans-serif;
+  --font-body:'Noto Sans TC','Outfit',sans-serif;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+  --r:14px; --r-sm:10px; --r-xs:6px;
+  --accent:#c0392b; --accent-hi:#e74c3c; --accent-dim:rgba(192,57,43,.12);
+  --gold:#d4a017; --gold-dim:rgba(212,160,23,.12);
+  --green:#27ae60; --green-dim:rgba(39,174,96,.12);
+  --red:#c0392b; --red-dim:rgba(192,57,43,.1);
+  --yellow:#f39c12; --yellow-dim:rgba(243,156,18,.1);
+  --blue:#2980b9; --blue-dim:rgba(41,128,185,.1);
+  /* transition for theme switch */
+  --theme-transition: background .35s, color .35s, border-color .35s, box-shadow .35s;
 }
+[data-theme="dark"] {
+  --bg:#0d0d0d; --s1:#161616; --s2:#1e1e1e; --s3:#282828;
+  --border:#2a2a2a; --border-hi:rgba(192,57,43,.4);
+  --text:#f0ece4; --mid:#9a9489; --dim:#5a5650;
+  --card-shadow:0 2px 12px rgba(0,0,0,.5);
+  --topbar-bg:rgba(13,13,13,.92);
+}
+[data-theme="light"] {
+  --bg:#f5f2ed; --s1:#ffffff; --s2:#faf8f5; --s3:#eee9e2;
+  --border:#d9d3ca; --border-hi:rgba(192,57,43,.3);
+  --text:#1a1a1a; --mid:#6b6560; --dim:#a09890;
+  --card-shadow:0 2px 12px rgba(0,0,0,.08);
+  --topbar-bg:rgba(245,242,237,.92);
+}
+
+/* ══ RESET & BASE ══ */
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans TC','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-#login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;}
-.login-wrap{width:100%;max-width:380px;padding:20px;}
-.login-card{background:var(--s1);border:1px solid var(--border-hi);border-radius:20px;padding:40px 36px;text-align:center;box-shadow:0 0 60px rgba(139,92,246,.15);}
-.login-logo{font-size:2.5rem;margin-bottom:16px;}
-.login-title{font-size:1.3rem;font-weight:900;color:var(--p-hi);margin-bottom:6px;}
-.login-sub{font-size:.85rem;color:var(--mid);margin-bottom:28px;}
-.login-input{width:100%;padding:14px 18px;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-size:1rem;text-align:center;letter-spacing:3px;outline:none;transition:border-color .2s;margin-bottom:14px;}
-.login-input:focus{border-color:var(--p);}
-.login-btn{width:100%;padding:14px;background:var(--p);color:#fff;border:none;border-radius:var(--r-sm);font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;}
-.login-btn:hover{background:var(--p-hi);transform:translateY(-1px);}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:var(--theme-transition);}
+
+/* ══ LOGIN ══ */
+#login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:var(--theme-transition);}
+.login-wrap{width:100%;max-width:400px;padding:20px;}
+.login-card{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:48px 40px;text-align:center;box-shadow:var(--card-shadow);transition:var(--theme-transition);}
+.login-logo{font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--accent);margin-bottom:8px;letter-spacing:-1px;}
+.login-sub{font-size:.85rem;color:var(--mid);margin-bottom:32px;}
+.login-input{width:100%;padding:14px 18px;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-size:1rem;text-align:center;letter-spacing:3px;outline:none;transition:border-color .2s,var(--theme-transition);margin-bottom:14px;font-family:var(--font-body);}
+.login-input:focus{border-color:var(--accent);}
+.login-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--r-sm);font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-display);letter-spacing:.5px;}
+.login-btn:hover{background:var(--accent-hi);transform:translateY(-1px);}
 .login-error{color:var(--red);font-size:.82rem;margin-top:12px;display:none;}
+
+/* ══ TOPBAR ══ */
 #main-content{display:none;}
-.topbar{position:sticky;top:0;z-index:100;background:rgba(15,15,19,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;}
-.topbar-left{display:flex;align-items:center;gap:16px;}
-.topbar-logo{font-weight:900;font-size:1rem;color:var(--p-hi);}
-.nav-tabs{display:flex;gap:3px;}
-.nav-tab{padding:7px 15px;border-radius:var(--r-xs);font-size:.8rem;font-weight:700;cursor:pointer;color:var(--mid);border:1px solid transparent;transition:all .15s;display:flex;align-items:center;gap:5px;}
-.nav-tab:hover{background:var(--p-dim);color:var(--text);}
-.nav-tab.active{background:var(--p-dim);color:var(--p-hi);border-color:var(--border-hi);}
-.sync-pill{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--mid);padding:5px 10px;border-radius:50px;border:1px solid var(--border);}
+.topbar{position:sticky;top:0;z-index:100;background:var(--topbar-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;transition:var(--theme-transition);}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.topbar-logo{font-family:var(--font-display);font-weight:900;font-size:1.1rem;color:var(--accent);letter-spacing:-0.5px;}
+.nav-tabs{display:flex;gap:2px;}
+.nav-tab{padding:7px 16px;border-radius:var(--r-xs);font-size:.8rem;font-weight:700;cursor:pointer;color:var(--mid);border:none;background:transparent;transition:all .15s;display:flex;align-items:center;gap:5px;font-family:var(--font-body);position:relative;}
+.nav-tab:hover{color:var(--text);background:var(--s2);}
+.nav-tab.active{color:var(--text);font-weight:800;}
+.nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:20px;height:3px;background:var(--accent);border-radius:3px;}
+.sync-pill{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--mid);padding:5px 12px;border-radius:50px;border:1px solid var(--border);transition:var(--theme-transition);}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
 .sync-dot.spin{animation:pulse 1.2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.wrap{max-width:1400px;margin:0 auto;padding:24px;}
-.page{display:none;animation:fadeUp .22s ease;}.page.active{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:50px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;transition:all .15s;font-family:inherit;}
-.btn-p{background:var(--p);color:#fff;}.btn-p:hover{background:var(--p-hi);transform:translateY(-1px);}
+/* Theme toggle */
+.theme-toggle{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;}
+.theme-toggle:hover{border-color:var(--accent);transform:scale(1.05);}
+
+/* ══ LAYOUT ══ */
+.wrap{max-width:1400px;margin:0 auto;padding:28px;}
+.page{display:none;animation:fadeUp .25s ease;}.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page-header{margin-bottom:28px;}
+.page-title{font-family:var(--font-display);font-size:1.8rem;font-weight:900;letter-spacing:-1px;margin-bottom:4px;}
+.page-sub{font-size:.85rem;color:var(--mid);}
+
+/* ══ BUTTONS ══ */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--r-sm);font-size:.8rem;font-weight:700;cursor:pointer;border:none;transition:all .15s;font-family:var(--font-body);}
+.btn-accent{background:var(--accent);color:#fff;}.btn-accent:hover{background:var(--accent-hi);transform:translateY(-1px);}
+.btn-p{background:var(--accent);color:#fff;}.btn-p:hover{background:var(--accent-hi);transform:translateY(-1px);}
 .btn-g{background:var(--green);color:#fff;}.btn-g:hover{filter:brightness(1.1);}
 .btn-r{background:var(--red);color:#fff;}.btn-r:hover{filter:brightness(1.1);}
 .btn-y{background:var(--yellow);color:#fff;}
 .btn-b{background:var(--blue);color:#fff;}
-.btn-ghost{background:transparent;color:var(--mid);border:1px solid var(--border);}.btn-ghost:hover{border-color:var(--p);color:var(--p-hi);}
-.btn-sm{padding:5px 11px;font-size:.75rem;}
-.btn-xs{padding:3px 8px;font-size:.7rem;}
+.btn-ghost{background:transparent;color:var(--mid);border:1px solid var(--border);}.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm{padding:5px 12px;font-size:.75rem;}
+.btn-xs{padding:3px 9px;font-size:.7rem;}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
-.btn-save-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--p),var(--p-hi));color:#fff;border:none;border-radius:var(--r-sm);font-size:1rem;font-weight:700;cursor:pointer;margin-top:20px;transition:all .2s;font-family:inherit;}
-.btn-save-main:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-save-main{width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:var(--r-sm);font-size:1rem;font-weight:800;cursor:pointer;margin-top:24px;transition:all .2s;font-family:var(--font-display);letter-spacing:.3px;}
+.btn-save-main:hover{background:var(--accent-hi);transform:translateY(-1px);}
 .btn-edit-title{background:transparent;border:1px solid var(--border);color:var(--mid);padding:4px 10px;border-radius:var(--r-xs);cursor:pointer;font-size:.75rem;transition:.2s;}
 .btn-edit-title:hover{background:var(--s3);color:var(--text);}
-.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
-.card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.card-title{font-size:.9rem;font-weight:700;white-space:nowrap;}
-.card-body{padding:18px;}
+
+/* ══ CARDS ══ */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;box-shadow:var(--card-shadow);transition:var(--theme-transition);}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.card-title{font-size:.9rem;font-weight:800;white-space:nowrap;font-family:var(--font-display);}
+.card-body{padding:20px;}
+
+/* ══ TABLE ══ */
 .tbl-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:.83rem;}
-th{text-align:left;padding:10px 12px;font-size:.68rem;font-weight:700;letter-spacing:.07em;color:var(--dim);text-transform:uppercase;border-bottom:1px solid var(--border);}
-td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
-tr:hover td{background:rgba(255,255,255,.02);}
+th{text-align:left;padding:10px 14px;font-size:.68rem;font-weight:700;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;border-bottom:1px solid var(--border);}
+td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;transition:var(--theme-transition);}
+[data-theme="dark"] td{border-bottom-color:rgba(255,255,255,.04);}
+tr:hover td{background:rgba(0,0,0,.02);}
+[data-theme="dark"] tr:hover td{background:rgba(255,255,255,.02);}
 tr:last-child td{border-bottom:none;}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:50px;font-size:.7rem;font-weight:700;}
+
+/* ══ BADGE ══ */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:.7rem;font-weight:700;}
 .badge::before{content:'';width:5px;height:5px;border-radius:50%;}
 .b-pending{background:var(--yellow-dim);color:var(--yellow);}.b-pending::before{background:var(--yellow);}
 .b-paid{background:var(--green-dim);color:var(--green);}.b-paid::before{background:var(--green);}
-.b-shipped{background:var(--p-dim);color:var(--p-hi);}.b-shipped::before{background:var(--p-hi);}
+.b-shipped{background:var(--accent-dim);color:var(--accent);}.b-shipped::before{background:var(--accent);}
 .b-cancelled{background:var(--red-dim);color:var(--red);}.b-cancelled::before{background:var(--red);}
-.fi,.fs,.fta{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;color:var(--text);font-family:inherit;font-size:.88rem;outline:none;width:100%;transition:border-color .15s;}
-.fi:focus,.fs:focus,.fta:focus{border-color:var(--p);}
-.fs option{background:var(--s2);}
+
+/* ══ FORM ══ */
+.fi,.fs,.fta{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:.88rem;outline:none;width:100%;transition:border-color .15s,var(--theme-transition);}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--accent);}
+.fs option{background:var(--s1);}
 .fta{resize:vertical;min-height:70px;}
-.fl{display:block;margin-bottom:6px;font-size:.75rem;font-weight:700;color:var(--mid);}
-.fg{margin-bottom:14px;}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fl{display:block;margin-bottom:6px;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--dim);text-transform:uppercase;}
+.fg{margin-bottom:16px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .gg{display:grid;gap:12px;}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 input[type=number]{-moz-appearance:textfield;}
+
+/* ══ SCROLLBAR ══ */
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:10px;}
-::-webkit-scrollbar-thumb:hover{background:var(--p);}
-.kanban{display:flex;gap:18px;overflow-x:auto;padding-bottom:12px;}
-.kol{flex:1;min-width:300px;background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;}
-.kol-head{font-size:1rem;font-weight:700;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-.kol-list{flex:1;min-height:100px;border-radius:var(--r-sm);transition:.2s;}
-.kol-list.dz{background:var(--p-dim);border:2px dashed var(--p);}
-.camp-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;margin-bottom:10px;cursor:grab;transition:all .2s;}
-.camp-card:hover{border-color:var(--p);box-shadow:0 4px 16px rgba(0,0,0,.3);transform:translateY(-2px);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:var(--mid);}
+
+/* ══ KANBAN ══ */
+.kanban{display:flex;gap:20px;overflow-x:auto;padding-bottom:12px;}
+.kol{flex:1;min-width:280px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:0;display:flex;flex-direction:column;box-shadow:var(--card-shadow);transition:var(--theme-transition);}
+.kol-head{font-size:.82rem;font-weight:800;padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-display);letter-spacing:.02em;}
+.kol-head::before{content:'';width:8px;height:8px;border-radius:50%;margin-right:8px;flex-shrink:0;}
+#zone-open{}.kol:nth-child(1) .kol-head::before{background:var(--green);}
+.kol:nth-child(2) .kol-head::before{background:var(--dim);}
+.kol:nth-child(3) .kol-head::before{background:var(--yellow);}
+.kol:nth-child(4) .kol-head::before{background:var(--blue);}
+.kol-list{flex:1;min-height:100px;padding:12px;border-radius:0 0 var(--r) var(--r);transition:.2s;}
+.kol-list.dz{background:var(--accent-dim);outline:2px dashed var(--accent);outline-offset:-4px;}
+.camp-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px;margin-bottom:10px;cursor:grab;transition:all .2s;}
+.camp-card:hover{border-color:var(--accent);box-shadow:0 4px 20px rgba(0,0,0,.15);transform:translateY(-2px);}
 .camp-card:active{cursor:grabbing;}
-.camp-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-.drag-h{color:var(--dim);font-size:1.1rem;cursor:grab;}
-.admin-panel{background:var(--bg);border:2px dashed var(--border);padding:24px;border-radius:var(--r);margin-bottom:16px;}
-.admin-sec{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;}
-.list-item{display:flex;justify-content:space-between;align-items:center;background:var(--s2);padding:13px 15px;margin-bottom:8px;border-radius:var(--r-sm);border:1px solid var(--border);transition:border-color .15s;}
+.camp-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.drag-h{color:var(--dim);font-size:1rem;cursor:grab;}
+
+/* ══ ADMIN PANELS ══ */
+.admin-panel{background:var(--bg);border:2px dashed var(--border);padding:28px;border-radius:var(--r);margin-bottom:16px;transition:var(--theme-transition);}
+.admin-sec{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:16px;box-shadow:var(--card-shadow);transition:var(--theme-transition);}
+.list-item{display:flex;justify-content:space-between;align-items:center;background:var(--s2);padding:14px 16px;margin-bottom:8px;border-radius:var(--r-sm);border:1px solid var(--border);transition:border-color .15s,var(--theme-transition);}
 .list-item:hover{border-color:var(--border-hi);}
 .add-row{display:flex;gap:8px;}.add-row .fi{flex:1;}
 .inp-price{max-width:110px!important;}
 .item-price{font-size:.78rem;color:var(--mid);margin-top:4px;display:block;}
-.camp-desc-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;color:var(--text);font-family:inherit;font-size:.88rem;resize:vertical;min-height:70px;outline:none;transition:border-color .15s;}
-.camp-desc-input:focus{border-color:var(--p);}
+.camp-desc-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;color:var(--text);font-family:var(--font-body);font-size:.88rem;resize:vertical;min-height:70px;outline:none;transition:border-color .15s,var(--theme-transition);}
+.camp-desc-input:focus{border-color:var(--accent);}
+
+/* ══ PRIORITY TABLE ══ */
 .priority-table{width:100%;border-collapse:collapse;}
 .priority-table th{background:var(--s2);text-align:left;padding:10px 14px;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--dim);text-transform:uppercase;border-bottom:1px solid var(--border);}
-.priority-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+.priority-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+[data-theme="dark"] .priority-table td{border-bottom-color:rgba(255,255,255,.04);}
 .priority-table tr:last-child td{border-bottom:none;}
-.priority-select{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-xs);padding:7px 10px;color:var(--text);font-size:.85rem;outline:none;cursor:pointer;transition:border-color .15s;width:90px;font-family:inherit;}
-.priority-select:focus{border-color:var(--p);}
+.priority-select{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-xs);padding:7px 10px;color:var(--text);font-size:.85rem;outline:none;cursor:pointer;width:90px;font-family:var(--font-body);transition:var(--theme-transition);}
+.priority-select:focus{border-color:var(--accent);}
 .priority-select.dup{border-color:var(--red)!important;background:var(--red-dim);}
-.upload-z{border:2px dashed var(--border);border-radius:var(--r);padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;}
-.upload-z:hover,.upload-z.dz{border-color:var(--p);background:var(--p-dim);}
+
+/* ══ UPLOAD ══ */
+.upload-z{border:2px dashed var(--border);border-radius:var(--r);padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;}
+.upload-z:hover,.upload-z.dz{border-color:var(--accent);background:var(--accent-dim);}
 .upload-ico{font-size:2.5rem;margin-bottom:10px;}
-.match-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}
-.mc{border-radius:var(--r-sm);padding:16px;text-align:center;}
-.mc.ok{background:var(--green-dim);border:1px solid rgba(16,185,129,.25);}
-.mc.warn{background:var(--yellow-dim);border:1px solid rgba(245,158,11,.25);}
-.mc.fail{background:var(--red-dim);border:1px solid rgba(239,68,68,.25);}
-.mc-num{font-size:1.8rem;font-weight:700;margin-bottom:4px;}
-.buyer-res{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:14px;display:none;}
+
+/* ══ MATCH ══ */
+.match-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0;}
+.mc{border-radius:var(--r-sm);padding:18px;text-align:center;transition:var(--theme-transition);}
+.mc.ok{background:var(--green-dim);border:1px solid rgba(39,174,96,.2);}
+.mc.warn{background:var(--yellow-dim);border:1px solid rgba(243,156,18,.2);}
+.mc.fail{background:var(--red-dim);border:1px solid rgba(192,57,43,.2);}
+.mc-num{font-size:1.8rem;font-weight:900;margin-bottom:4px;font-family:var(--font-display);}
+
+/* ══ BUYER RES ══ */
+.buyer-res{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:14px;display:none;transition:var(--theme-transition);}
 .buyer-res.show{display:block;}
 .tl-item{display:flex;gap:12px;align-items:flex-start;padding-bottom:14px;position:relative;}
 .tl-item:not(:last-child)::after{content:'';position:absolute;left:14px;top:28px;bottom:0;width:1px;background:var(--border);}
 .tl-dot{width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;position:relative;z-index:1;}
-.tl-done{background:var(--green-dim);border:1px solid rgba(16,185,129,.3);}
+.tl-done{background:var(--green-dim);border:1px solid rgba(39,174,96,.3);}
 .tl-wait{background:var(--s2);border:1px solid var(--border);}
+
+/* ══ ALLOC ══ */
 .alloc-grid{display:grid;grid-template-columns:1fr;gap:10px;}
-.a-slot{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;display:flex;align-items:center;transition:border-color .2s;}
-.a-slot.filled{background:var(--p-dim);border-color:rgba(139,92,246,.35);}
+.a-slot{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 18px;display:flex;align-items:center;transition:all .2s;}
+.a-slot.filled{background:var(--accent-dim);border-color:var(--border-hi);}
 .a-slot.empty{border-style:dashed;}
-.a-num{font-size:1.1rem;font-weight:700;color:var(--dim);}
+.a-num{font-size:1.1rem;font-weight:900;color:var(--dim);font-family:var(--font-display);}
+
+/* ══ FILTER ══ */
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.search-in{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 13px;color:var(--text);font-family:inherit;font-size:.83rem;outline:none;flex:1;min-width:160px;}
-.search-in:focus{border-color:var(--p);}
-.subtabs{display:flex;gap:3px;margin-bottom:18px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r-sm);padding:4px;}
-.subtab{flex:1;padding:8px;border-radius:6px;text-align:center;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--mid);transition:all .15s;}
-.subtab.active{background:var(--p);color:#fff;}
-.notif{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 18px;font-size:.85rem;max-width:300px;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;}
+.search-in{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 14px;color:var(--text);font-family:var(--font-body);font-size:.83rem;outline:none;flex:1;min-width:160px;transition:var(--theme-transition);}
+.search-in:focus{border-color:var(--accent);}
+
+/* ══ SUBTABS ══ */
+.subtabs{display:flex;gap:3px;margin-bottom:20px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r-sm);padding:4px;transition:var(--theme-transition);}
+.subtab{flex:1;padding:9px;border-radius:8px;text-align:center;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--mid);transition:all .15s;font-family:var(--font-body);}
+.subtab.active{background:var(--accent);color:#fff;}
+
+/* ══ MISC ══ */
+.notif{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;font-size:.85rem;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.3);display:none;transition:var(--theme-transition);}
 .notif.show{display:block;animation:fadeUp .2s ease;}
-.notif.ok{border-color:rgba(16,185,129,.4);}.notif.err{border-color:rgba(239,68,68,.4);}.notif.warn{border-color:rgba(245,158,11,.4);}
-.sp{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+.notif.ok{border-color:rgba(39,174,96,.4);}.notif.err{border-color:rgba(192,57,43,.4);}.notif.warn{border-color:rgba(243,156,18,.4);}
+.sp{display:inline-block;width:14px;height:14px;border:2px solid var(--dim);border-top-color:var(--text);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty{text-align:center;padding:40px;color:var(--dim);}
 .empty-ico{font-size:2rem;margin-bottom:10px;opacity:.4;}
 .prog{background:var(--s2);border-radius:50px;height:5px;overflow:hidden;}
 .prog-bar{height:100%;border-radius:50px;background:var(--green);transition:width .4s;}
 .sep{border:none;border-top:1px solid var(--border);margin:18px 0;}
-.drag-over{opacity:.6;border:2px dashed var(--p)!important;}
+.drag-over{opacity:.6;border:2px dashed var(--accent)!important;}
 .draggable-category{cursor:default;}
+
+/* ══ STEP BAR ══ */
 .step-bar{display:flex;justify-content:space-between;position:relative;margin-top:12px;padding:12px 0 4px;z-index:1;}
 .step-line-wrap{position:absolute;top:24px;left:20px;right:20px;height:3px;z-index:0;}
 .step-bg{position:absolute;width:100%;height:100%;background:var(--border);border-radius:2px;}
-.step-line{position:absolute;height:100%;background:var(--p);border-radius:2px;transition:0.4s;}
+.step-line{position:absolute;height:100%;background:var(--gold);border-radius:2px;transition:0.4s;}
 .step-node{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;z-index:1;}
 .step-dot{width:28px;height:28px;border-radius:50%;background:var(--bg);border:3px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:bold;color:var(--dim);transition:all .2s;}
 .step-label{font-size:.6rem;color:var(--dim);white-space:nowrap;max-width:48px;text-align:center;line-height:1.2;}
-.step-node:hover .step-dot{border-color:var(--p);color:var(--p);}
-.step-node.completed .step-dot{background:var(--bg);border-color:var(--p);color:var(--p-hi);}
-.step-node.completed .step-label{color:var(--p-hi);}
-.step-node.active .step-dot{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 0 12px rgba(139,92,246,.4);transform:scale(1.15);}
+.step-node:hover .step-dot{border-color:var(--gold);color:var(--gold);}
+.step-node.completed .step-dot{background:var(--bg);border-color:var(--gold);color:var(--gold);}
+.step-node.completed .step-label{color:var(--gold);}
+.step-node.active .step-dot{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 0 12px var(--gold-dim);transform:scale(1.15);}
 .step-node.active .step-label{color:var(--text);font-weight:bold;}
 </style>
 </head>
 <body>
+<!-- ══ LOGIN ══ -->
 <div id="login-screen"><div class="login-wrap"><div class="login-card">
-  <div class="login-logo">⚙️</div>
-  <div class="login-title">賣家管理後台</div>
-  <div class="login-sub">請輸入管理員密碼</div>
+  <div class="login-logo">TWT</div>
+  <div class="login-sub">賣家管理後台 · 請輸入密碼</div>
   <input type="password" id="adminPwd" class="login-input" placeholder="••••••••" onkeypress="if(event.key==='Enter')verifyLogin()">
   <button class="login-btn" onclick="verifyLogin()">進入後台</button>
-  <div id="login-error" class="login-error">❌ 密碼錯誤，請重試</div>
+  <div id="login-error" class="login-error">密碼錯誤，請重試</div>
 </div></div></div>
+
+<!-- ══ MAIN ══ -->
 <div id="main-content">
 <div class="topbar">
   <div class="topbar-left">
-    <div class="topbar-logo">⚙️ 賣家後台</div>
+    <div class="topbar-logo">TWT</div>
     <div class="nav-tabs">
-      <div class="nav-tab active" onclick="gotoPage('campaigns')" id="tab-campaigns">📋 開團看板</div>
-      <div class="nav-tab" onclick="gotoPage('reconcile')" id="tab-reconcile">⚡ 對帳</div>
-      <div class="nav-tab" onclick="gotoPage('secondpay')" id="tab-secondpay">⚖️ 二補試算</div>
-      <div class="nav-tab" onclick="gotoPage('buyer')" id="tab-buyer">🔍 買家查詢</div>
-      <div class="nav-tab" onclick="gotoPage('allocation')" id="tab-allocation">✨ 配位</div>
+      <div class="nav-tab active" onclick="gotoPage('campaigns')" id="tab-campaigns">Campaign Board</div>
+      <div class="nav-tab" onclick="gotoPage('reconcile')" id="tab-reconcile">Reconciliation</div>
+      <div class="nav-tab" onclick="gotoPage('secondpay')" id="tab-secondpay">Second Payment</div>
+      <div class="nav-tab" onclick="gotoPage('buyer')" id="tab-buyer">Buyer Search</div>
+      <div class="nav-tab" onclick="gotoPage('allocation')" id="tab-allocation">Allocation</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
     <div class="sync-pill"><div class="sync-dot" id="sdot"></div><span id="slbl">就緒</span></div>
-    <button class="btn btn-ghost btn-sm" onclick="logout()">登出</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="切換主題">🌙</button>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
   </div>
 </div>
+
 <div class="wrap">
+
+<!-- ════ PAGE：開團看板 ════ -->
 <div class="page active" id="page-campaigns">
   <div id="view-campaigns">
-    <!-- 🌟 TWT 賣場說明 -->
-    <div class="admin-sec" style="margin-bottom:18px;">
-      <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;">🏪 TWT 賣場說明（前後台皆顯示）</div>
-      <textarea class="camp-desc-input" id="store-desc" placeholder="在此輸入整個賣場的公告或說明..." style="border-left:3px solid var(--p);min-height:50px;" onchange="boardColumns.storeDescription=this.value"></textarea>
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+      <div><div class="page-title">開團看板</div><div class="page-sub">Manage your sales cycles and inventory across all store categories.</div></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select class="fs" id="newCampType" style="width:130px;padding:8px 12px;border-radius:var(--r-sm);font-size:.82rem;">
+          <option value="campaign">新增類型 ▾</option>
+          <option value="campaign">📋 開團</option>
+          <option value="instock">🛍️ 賣場</option>
+        </select>
+        <select class="fs" id="newCampGroup" onchange="onGroupSelectChange(this)" style="width:150px;padding:8px 12px;border-radius:var(--r-sm);font-size:.82rem;">
+          <option value="">🏷️ Group ▾</option>
+        </select>
+        <input type="text" class="fi" id="newCampName" placeholder="輸入名稱" style="width:200px;padding:8px 12px;font-size:.82rem;">
+        <button class="btn btn-accent" onclick="addCampaign()" style="padding:8px 20px;">＋ Add Campaign</button>
+      </div>
     </div>
-    <!-- 🌟 新增開團 / 現有賣場 -->
-    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-      <select class="fs" id="newCampType" style="width:140px;padding:8px;border-radius:var(--r-sm);">
-        <option value="campaign">📋 新增開團</option>
-        <option value="instock">🛍️ 新增賣場</option>
-      </select>
-      <select class="fs" id="newCampGroup" onchange="onGroupSelectChange(this)" style="width:160px;padding:8px;border-radius:var(--r-sm);">
-        <option value="">-- 選擇團體 --</option>
-      </select>
-      <input type="text" class="fi" id="newCampName" placeholder="輸入名稱" style="flex:1;min-width:120px;">
-      <button class="btn btn-g" onclick="addCampaign()">＋ 新增</button>
+    <div class="admin-sec" style="margin:20px 0 24px;">
+      <div style="font-weight:700;font-size:.82rem;margin-bottom:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;">🏪 Store Description</div>
+      <textarea class="camp-desc-input" id="store-desc" placeholder="在此輸入整個賣場的公告或說明..." style="border-left:3px solid var(--accent);min-height:45px;" onchange="boardColumns.storeDescription=this.value"></textarea>
     </div>
     <div class="kanban">
-      <div class="kol"><div class="kol-head"><span id="title-open" style="color:var(--green)">🟢 開團中</span><button class="btn-edit-title" onclick="editColTitle('open')">✎</button></div><div class="kol-list" id="zone-open" ondragover="handleDragOver(event)" ondragenter="handleZoneDragEnter(event)" ondragleave="handleZoneDragLeave(event)" ondrop="handleCampDrop(event,'open')"></div></div>
-      <div class="kol"><div class="kol-head"><span id="title-closed" style="color:var(--red)">🔴 停止收單</span><button class="btn-edit-title" onclick="editColTitle('closed')">✎</button></div><div class="kol-list" id="zone-closed" ondragover="handleDragOver(event)" ondragenter="handleZoneDragEnter(event)" ondragleave="handleZoneDragLeave(event)" ondrop="handleCampDrop(event,'closed')"></div></div>
-      <div class="kol"><div class="kol-head"><span id="title-arrived" style="color:var(--yellow)">📦 理貨中</span><button class="btn-edit-title" onclick="editColTitle('arrived')">✎</button></div><div class="kol-list" id="zone-arrived" ondragover="handleDragOver(event)" ondragenter="handleZoneDragEnter(event)" ondragleave="handleZoneDragLeave(event)" ondrop="handleCampDrop(event,'arrived')"></div></div>
-      <div class="kol"><div class="kol-head"><span id="title-instock" style="color:var(--blue)">🛍️ 現貨/已有賣場</span><button class="btn-edit-title" onclick="editColTitle('instock')">✎</button></div><div class="kol-list" id="zone-instock" ondragover="handleDragOver(event)" ondragenter="handleZoneDragEnter(event)" ondragleave="handleZoneDragLeave(event)" ondrop="handleCampDrop(event,'instock')"></div></div>
+      <div class="kol"><div class="kol-head"><span id="title-open">收單中</span><button class="btn-edit-title" onclick="editColTitle('open')">✎</button></div><div class="kol-list" id="zone-open" ondragover="handleDragOver(event)" ondragenter="handleZoneDragEnter(event)" ondragleave="handleZoneDragLeave(event)" ondrop="handleCampDrop(event,'open')"></div></div>
+      <div class="kol"><div class="kol-head"><span id="title-closed">已結單</span><button class="btn-edit-title" onclick="editColTitle('closed')">✎</button></div><div class="kol-list" id="zone-closed" ondragover="handleDragOver(event)" ondragenter="handleZoneDragEnter(event)" ondragleave="handleZoneDragLeave(event)" ondrop="handleCampDrop(event,'closed')"></div></div>
+      <div class="kol"><div class="kol-head"><span id="title-arrived">理貨中</span><button class="btn-edit-title" onclick="editColTitle('arrived')">✎</button></div><div class="kol-list" id="zone-arrived" ondragover="handleDragOver(event)" ondragenter="handleZoneDragEnter(event)" ondragleave="handleZoneDragLeave(event)" ondrop="handleCampDrop(event,'arrived')"></div></div>
+      <div class="kol"><div class="kol-head"><span id="title-instock">現貨/已有賣場</span><button class="btn-edit-title" onclick="editColTitle('instock')">✎</button></div><div class="kol-list" id="zone-instock" ondragover="handleDragOver(event)" ondragenter="handleZoneDragEnter(event)" ondragleave="handleZoneDragLeave(event)" ondrop="handleCampDrop(event,'instock')"></div></div>
     </div>
   </div>
-  <!-- 🌟 現有賣場編輯 (簡化版) -->
+  <!-- 現有賣場編輯 -->
   <div id="view-instock-edit" class="admin-panel" style="display:none;">
     <button class="btn btn-ghost btn-sm" onclick="showCampList()" style="margin-bottom:16px;">← 返回看板</button>
-    <h3 id="instock-edit-title" style="color:var(--blue);font-size:1.3rem;margin-bottom:18px;"></h3>
-    <div class="fg"><label class="fl">🏷️ 所屬團體</label><select class="fs" id="instock-group" onchange="onGroupSelectChange(this)" style="width:100%;padding:10px;"></select></div>
-    <div class="fg"><label class="fl">📝 賣場說明</label><textarea class="camp-desc-input" id="instock-desc" style="border-left:3px solid var(--blue)" placeholder="在此輸入賣場說明..." onchange="updateField('description',this.value)"></textarea></div>
-    <div class="fg"><label class="fl">🔗 7-11 賣貨便連結</label><input type="url" class="fi" id="instock-myship" placeholder="https://myship.7-11.com.tw/..." onchange="updateField('myshipLink',this.value)"></div>
+    <h3 id="instock-edit-title" style="color:var(--blue);font-size:1.3rem;margin-bottom:18px;font-family:var(--font-display);"></h3>
+    <div class="fg"><label class="fl">Group</label><select class="fs" id="instock-group" onchange="onGroupSelectChange(this)" style="width:100%;padding:10px;"></select></div>
+    <div class="fg"><label class="fl">Description</label><textarea class="camp-desc-input" id="instock-desc" style="border-left:3px solid var(--blue)" placeholder="在此輸入賣場說明..." onchange="updateField('description',this.value)"></textarea></div>
+    <div class="fg"><label class="fl">7-11 賣貨便連結</label><input type="url" class="fi" id="instock-myship" placeholder="https://myship.7-11.com.tw/..." onchange="updateField('myshipLink',this.value)"></div>
   </div>
   <!-- 開團編輯 -->
   <div id="view-categories" class="admin-panel" style="display:none;">
     <button class="btn btn-ghost btn-sm" onclick="showCampList()" style="margin-bottom:16px;">← 返回看板</button>
-    <h3 id="cur-camp-title" style="color:var(--p-hi);font-size:1.3rem;margin-bottom:18px;"></h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+      <div>
+        <div style="font-size:.72rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">Editor Mode</div>
+        <h3 id="cur-camp-title" style="font-family:var(--font-display);font-size:1.5rem;font-weight:900;"></h3>
+      </div>
+    </div>
     <div style="margin-bottom:20px;">
-      <div class="fg"><label class="fl">🏷️ 所屬團體</label><select class="fs" id="camp-group" onchange="onGroupSelectChange(this)" style="width:100%;padding:10px;"></select></div>
+      <div class="fg"><label class="fl">Group</label><select class="fs" id="camp-group" onchange="onGroupSelectChange(this)" style="width:100%;padding:10px;"></select></div>
     </div>
     <!-- 開團封面圖 -->
     <div class="fg" style="margin-bottom:20px;">
-      <label class="fl">🖼️ 開團封面圖（可新增多張，顯示於買家前台）</label>
+      <label class="fl">Cover Images</label>
       <div id="camp-image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;"></div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <label style="cursor:pointer;padding:6px 14px;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);font-size:.8rem;color:var(--mid);transition:.2s;" onmouseover="this.style.borderColor='var(--p)'" onmouseout="this.style.borderColor='var(--border)'">📷 新增圖片<input type="file" accept="image/*" style="display:none;" onchange="handleCampImage(this)" multiple></label>
+        <label style="cursor:pointer;padding:6px 14px;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);font-size:.8rem;color:var(--mid);transition:.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">📷 新增圖片<input type="file" accept="image/*" style="display:none;" onchange="handleCampImage(this)" multiple></label>
       </div>
     </div>
     <div class="g2" style="margin-bottom:20px;">
-      <div class="fg"><label class="fl">📝 開團說明 / 到貨時間</label><textarea id="camp-desc" class="camp-desc-input" style="border-left:3px solid var(--p)" placeholder="在此輸入開團說明..." onchange="updateField('description',this.value)"></textarea></div>
-      <div class="fg"><label class="fl">💳 匯款帳號 / 銀行說明</label><textarea id="camp-remit" class="camp-desc-input" style="border-left:3px solid var(--yellow)" placeholder="在此輸入匯款說明..." onchange="updateField('remitDescription',this.value)"></textarea></div>
+      <div class="fg"><label class="fl">Campaign Description</label><textarea id="camp-desc" class="camp-desc-input" style="border-left:3px solid var(--accent)" placeholder="在此輸入開團說明..." onchange="updateField('description',this.value)"></textarea></div>
+      <div class="fg"><label class="fl">Bank Remit Instructions</label><textarea id="camp-remit" class="camp-desc-input" style="border-left:3px solid var(--yellow)" placeholder="在此輸入匯款說明..." onchange="updateField('remitDescription',this.value)"></textarea></div>
     </div>
-    <div class="admin-sec" style="margin-bottom:20px;">
+    <!-- Priority Rule -->
+    <div class="admin-sec" style="margin-bottom:20px;border-left:4px solid var(--accent);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div><div style="font-weight:700;font-size:.95rem;margin-bottom:3px;">🃏 滿額卡排序系統與原幣計算</div><div style="font-size:.75rem;color:var(--mid);">設定原幣門檻後，買家平台將自動計算獲得張數。</div></div>
-        <div style="display:flex;gap:8px;"><button class="btn btn-g btn-sm" onclick="document.getElementById('newPriorityName')?.focus()">＋ 新增成員</button><button class="btn btn-ghost btn-sm" onclick="copyPriorityResult()">📋 複製結果</button></div>
+        <div><div style="font-weight:800;font-size:.95rem;margin-bottom:3px;font-family:var(--font-display);">Priority Rule</div><div style="font-size:.75rem;color:var(--mid);">設定原幣門檻後，買家平台將自動計算獲得張數。</div></div>
+        <div style="display:flex;gap:8px;"><button class="btn btn-g btn-sm" onclick="document.getElementById('newPriorityName')?.focus()">Add New</button><button class="btn btn-ghost btn-sm" onclick="copyPriorityResult()">📋 Copy</button></div>
       </div>
       <div class="g2" style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);">
-        <div class="fg"><label class="fl">幣值單位</label>
+        <div class="fg"><label class="fl">Currency</label>
           <select class="fs" id="camp-currency" style="width:100%;padding:10px;" onchange="updateField('currency',this.value)">
             <option value="">-- 選擇幣值 --</option>
             <option value="JPY">¥ 日圓 (JPY)</option>
@@ -264,66 +353,92 @@ input[type=number]{-moz-appearance:textfield;}
             <option value="USD">$ 美金 (USD)</option>
           </select>
         </div>
-        <div class="fg"><label class="fl">滿額卡門檻 (滿多少獲得 1 張)</label><input type="number" class="fi" id="camp-threshold" placeholder="例如：10000" onchange="updateField('priorityThreshold',parseInt(this.value)||0)"></div>
+        <div class="fg"><label class="fl">Minimum Threshold</label><input type="number" class="fi" id="camp-threshold" placeholder="例如：10000" onchange="updateField('priorityThreshold',parseInt(this.value)||0)"></div>
       </div>
       <div class="g2" style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);">
-        <div class="fg" style="grid-column:1/-1;"><label class="fl">🔗 7-11 賣貨便專屬連結</label><input type="url" class="fi" id="camp-myship" placeholder="https://myship.7-11.com.tw/..." onchange="updateField('myshipLink',this.value)"></div>
+        <div class="fg" style="grid-column:1/-1;"><label class="fl">7-11 賣貨便連結</label><input type="url" class="fi" id="camp-myship" placeholder="https://myship.7-11.com.tw/..." onchange="updateField('myshipLink',this.value)"></div>
       </div>
-      <div style="margin-bottom:16px;"><label class="fl">📝 滿額卡排序說明 (顯示於買家前台)</label><textarea id="camp-priority-desc" class="camp-desc-input" style="border-left:3px solid var(--green);min-height:40px;" placeholder="在此輸入滿額卡排序相關說明..." onchange="updateField('priorityDescription',this.value)"></textarea></div>
+      <div style="margin-bottom:16px;"><label class="fl">Priority Description (顯示於買家前台)</label><textarea id="camp-priority-desc" class="camp-desc-input" style="border-left:3px solid var(--green);min-height:40px;" placeholder="在此輸入滿額卡排序相關說明..." onchange="updateField('priorityDescription',this.value)"></textarea></div>
       <div id="priority-wrap"></div>
     </div>
     <div id="cat-list-container"></div>
     <div style="display:flex;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);"><input type="text" class="fi" id="newCatName" placeholder="新區塊名稱（例：扇套）" style="flex:1;"><button class="btn btn-g" onclick="addCategory()">＋ 新增區塊</button></div>
   </div>
-  <button class="btn-save-main" onclick="saveAdminData()">💾 儲存所有變更至雲端</button>
+  <button class="btn-save-main" onclick="saveAdminData()">💾 Save to Cloud</button>
 </div>
+
+<!-- ════ PAGE：對帳 ════ -->
 <div class="page" id="page-reconcile">
+  <div class="page-header"><div class="page-title">Reconciliation</div><div class="page-sub">對帳管理中心</div></div>
   <div class="subtabs"><div class="subtab active" onclick="switchRecTab(this,'ru')">① 上傳對帳</div><div class="subtab" onclick="switchRecTab(this,'rr')">② 比對結果</div><div class="subtab" onclick="switchRecTab(this,'rm')">③ 手動確認</div></div>
-  <div id="ru"><div class="card"><div class="card-head"><span class="card-title">⚡ 上傳銀行明細 CSV</span></div><div class="card-body">
+  <div id="ru"><div class="card"><div class="card-head"><span class="card-title">上傳銀行明細 CSV</span></div><div class="card-body">
     <div class="upload-z" id="upload-z" onclick="document.getElementById('csv-in').click()" ondragover="uploadDragOver(event)" ondrop="uploadDropFile(event)" ondragleave="uploadDragLeave()"><div class="upload-ico">📂</div><div style="color:var(--mid);font-size:.95rem;">點擊或拖曳 CSV 至此</div><div style="font-size:.78rem;color:var(--dim);margin-top:6px;">自動比對匯款後五碼＋金額</div></div>
     <input type="file" id="csv-in" accept=".csv" style="display:none" onchange="handleCSV(this)">
     <hr class="sep"><label class="fl">或手動貼入轉帳紀錄（每行：後五碼,金額）</label>
     <textarea class="fta" id="manual-csv" placeholder="12345,1500&#10;67890,3000" style="font-family:var(--mono);font-size:.82rem;min-height:100px;"></textarea>
-    <button class="btn btn-p" style="margin-top:10px;" onclick="parseManualCSV()">⚡ 開始比對</button>
+    <button class="btn btn-accent" style="margin-top:10px;" onclick="parseManualCSV()">⚡ 開始比對</button>
   </div></div>
-  <div class="card"><div class="card-head"><span class="card-title">📌 比對邏輯</span></div><div class="card-body" style="font-size:.85rem;color:var(--mid);line-height:2;">
+  <div class="card"><div class="card-head"><span class="card-title">比對邏輯</span></div><div class="card-body" style="font-size:.85rem;color:var(--mid);line-height:2;">
     <div>訂單<strong style="color:var(--text)">匯款後五碼</strong> ↔ 轉帳帳號末五碼</div><div>訂單<strong style="color:var(--text)">應付金額</strong> ↔ 轉帳金額（誤差 &lt;$1）</div>
-    <div style="color:var(--green);">✅ 兩者皆符合 → 自動標記已付款</div><div style="color:var(--yellow);">⚠️ 碼符但金額不符 → 警示，請手動確認</div>
+    <div style="color:var(--green);">✅ 兩者皆符合 → 自動標記已付款</div><div style="color:var(--yellow);">⚠️ 碼符但金額不符 → 警示</div>
   </div></div></div>
-  <div id="rr" style="display:none;"><div class="match-row" id="match-sum"></div><div class="card"><div class="card-head"><span class="card-title">比對明細</span><button class="btn btn-g btn-sm" id="apply-btn" onclick="applyMatches()">✓ 套用並更新 Sheet</button></div><div class="tbl-wrap"><table><thead><tr><th>開團</th><th>帳號</th><th>匯款後五碼</th><th>應付</th><th>結果</th></tr></thead><tbody id="rec-tb"></tbody></table></div></div></div>
-  <div id="rm" style="display:none;"><div class="card"><div class="card-head"><span class="card-title" style="display:flex;align-items:center;gap:10px;">🔧 手動更改付款狀態<button class="btn btn-ghost btn-xs" onclick="loadOrders()">↻ 重新整理</button></span><div class="filter-bar" style="margin:0;"><input class="search-in" id="mq" placeholder="搜尋帳號、後五碼..." oninput="renderManualTb()" style="min-width:180px;"><select class="fs" id="mcf" onchange="renderManualTb()" style="width:150px;padding:8px;border-radius:var(--r-sm);"><option value="">全部開團</option></select></div></div><div class="tbl-wrap"><table><thead><tr><th>開團</th><th>帳號</th><th>金額</th><th>匯款後五碼</th><th>狀態</th><th>操作</th></tr></thead><tbody id="manual-tb"></tbody></table></div></div></div>
+  <div id="rr" style="display:none;"><div class="match-row" id="match-sum"></div><div class="card"><div class="card-head"><span class="card-title">比對明細</span><button class="btn btn-g btn-sm" id="apply-btn" onclick="applyMatches()">✓ 套用並更新</button></div><div class="tbl-wrap"><table><thead><tr><th>開團</th><th>帳號</th><th>匯款後五碼</th><th>應付</th><th>結果</th></tr></thead><tbody id="rec-tb"></tbody></table></div></div></div>
+  <div id="rm" style="display:none;"><div class="card"><div class="card-head"><span class="card-title" style="display:flex;align-items:center;gap:10px;">手動更改付款狀態<button class="btn btn-ghost btn-xs" onclick="loadOrders()">↻</button></span><div class="filter-bar" style="margin:0;"><input class="search-in" id="mq" placeholder="搜尋帳號、後五碼..." oninput="renderManualTb()" style="min-width:180px;"><select class="fs" id="mcf" onchange="renderManualTb()" style="width:150px;padding:8px;border-radius:var(--r-sm);"><option value="">全部開團</option></select></div></div><div class="tbl-wrap"><table><thead><tr><th>開團</th><th>帳號</th><th>金額</th><th>後五碼</th><th>狀態</th><th>操作</th></tr></thead><tbody id="manual-tb"></tbody></table></div></div></div>
 </div>
+
+<!-- ════ PAGE：二補試算 ════ -->
 <div class="page" id="page-secondpay">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;"><div style="font-size:1.2rem;font-weight:bold;">⚖️ 二補試算與管理</div><select class="fs" id="sp-camp-filter" onchange="renderSecondPayTb()" style="width:250px;padding:8px;border-radius:var(--r-sm);"><option value="">請選擇開團</option></select></div>
+  <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
+    <div><div class="page-title">Second Payment</div><div class="page-sub">二補試算管理中心</div></div>
+    <select class="fs" id="sp-camp-filter" onchange="renderSecondPayTb()" style="width:250px;padding:8px 12px;border-radius:var(--r-sm);"><option value="">請選擇開團</option></select>
+  </div>
   <div class="g2" style="align-items:start;">
-    <div class="card" style="margin-bottom:0;"><div class="card-head">📦 品項單件重量設定 (kg)</div><div class="card-body" id="sp-items-container" style="max-height:650px;overflow-y:auto;padding:15px;"><div class="empty"><div class="empty-ico">📦</div><div>請先在上方選擇開團</div></div></div></div>
-    <div class="card" style="margin-bottom:0;"><div class="card-head"><div style="display:flex;align-items:center;gap:10px;">買家二補明細 (自動計算)<button class="btn btn-ghost btn-xs" onclick="onItemWeightChange(false)" title="強制更新所有買家">↻ 更新</button></div><button class="btn btn-p btn-sm" onclick="batchSaveSecondPay()" id="btn-save-sp">💾 批次儲存</button></div>
+    <div class="card" style="margin-bottom:0;"><div class="card-head"><span class="card-title">Item Weight Settings</span></div><div class="card-body" id="sp-items-container" style="max-height:650px;overflow-y:auto;padding:15px;"><div class="empty"><div class="empty-ico">📦</div><div>請先選擇開團</div></div></div></div>
+    <div class="card" style="margin-bottom:0;"><div class="card-head"><div style="display:flex;align-items:center;gap:10px;"><span class="card-title">Buyer Second Payment List</span><button class="btn btn-ghost btn-xs" onclick="onItemWeightChange(false)" title="強制更新">↻</button></div><button class="btn btn-accent btn-sm" onclick="batchSaveSecondPay()" id="btn-save-sp">💾 批次儲存</button></div>
     <div class="card-body" style="max-height:650px;overflow-y:auto;padding:0;">
-      <div style="padding:15px;border-bottom:1px solid var(--border);background:var(--s2);"><label style="font-size:.8rem;color:var(--mid);">🌍 國際運費費率 (NTD/kg)</label><div style="margin-top:6px;display:flex;align-items:center;gap:8px;"><span style="font-size:0.9rem;font-weight:bold;">NT$</span><input type="number" class="fi" id="sp-rate" value="200" style="width:100px;padding:6px;text-align:center;" oninput="recalcAllSecPay()"></div></div>
-      <table style="width:100%;border-collapse:collapse;"><thead style="position:sticky;top:0;background:var(--s1);z-index:10;box-shadow:0 1px 0 var(--border);"><tr><th style="padding:12px 15px;">買家與購買明細</th><th style="width:75px;text-align:center;">總重量</th><th style="width:75px;text-align:center;">國際運費</th><th style="width:75px;text-align:center;">包材費</th><th style="width:95px;text-align:center;padding-right:15px;">二補總計<br>(運費+包材)</th></tr></thead><tbody id="secpay-tb"><tr><td colspan="5"><div class="empty"><div class="empty-ico">⚖️</div><div>請先選擇開團</div></div></td></tr></tbody></table>
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);background:var(--s2);display:flex;justify-content:space-between;align-items:center;"><label style="font-size:.78rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.08em;">Shipping Configuration</label><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:.82rem;color:var(--mid);">NTD/kg</span><input type="number" class="fi" id="sp-rate" value="200" style="width:80px;padding:8px;text-align:center;font-weight:700;" oninput="recalcAllSecPay()"></div></div>
+      <table style="width:100%;border-collapse:collapse;"><thead style="position:sticky;top:0;background:var(--s1);z-index:10;box-shadow:0 1px 0 var(--border);"><tr><th style="padding:12px 15px;">Buyer & Details</th><th style="width:75px;text-align:center;">Total Weight</th><th style="width:85px;text-align:center;">Intl. Shipping</th><th style="width:75px;text-align:center;">Packaging</th><th style="width:85px;text-align:center;padding-right:15px;">Total</th></tr></thead><tbody id="secpay-tb"><tr><td colspan="5"><div class="empty"><div class="empty-ico">⚖️</div><div>請先選擇開團</div></div></td></tr></tbody></table>
     </div></div>
   </div>
 </div>
-<div class="page" id="page-buyer"><div style="max-width:520px;margin:0 auto;"><div class="card"><div class="card-head"><span class="card-title">🔍 買家訂單查詢（賣家端）</span></div><div class="card-body"><div class="fg"><label class="fl">匯款帳號後五碼或完整電話</label><input class="fi" id="buyer-ph" placeholder="45678 或 0912345678" onkeydown="if(event.key==='Enter')lookupBuyer()"></div><button class="btn btn-p" style="width:100%;justify-content:center;" onclick="lookupBuyer()">🔍 查詢訂單進度</button></div></div><div class="buyer-res" id="buyer-res"><div id="buyer-list"></div></div></div></div>
+
+<!-- ════ PAGE：買家查詢 ════ -->
+<div class="page" id="page-buyer"><div style="max-width:520px;margin:0 auto;"><div class="card"><div class="card-head"><span class="card-title">Buyer Search</span></div><div class="card-body"><div class="fg"><label class="fl">匯款帳號後五碼或完整電話</label><input class="fi" id="buyer-ph" placeholder="45678 或 0912345678" onkeydown="if(event.key==='Enter')lookupBuyer()"></div><button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="lookupBuyer()">🔍 查詢</button></div></div><div class="buyer-res" id="buyer-res"><div id="buyer-list"></div></div></div></div>
+
+<!-- ════ PAGE：配位 ════ -->
 <div class="page" id="page-allocation">
+  <div class="page-header"><div class="page-title">Allocation</div><div class="page-sub">配位設定</div></div>
   <div class="g2" style="margin-bottom:16px;">
-    <div class="card" style="margin-bottom:0;"><div class="card-head"><span class="card-title">⚙️ 配位設定</span></div><div class="card-body"><div class="gg">
-      <div class="fg"><label class="fl">選擇開團</label><select class="fs" id="al-camp"><option value="">-- 全部已付款 --</option></select></div>
-      <div class="fg"><label class="fl">總位置數</label><input class="fi" id="al-slots" type="number" value="10" min="1" max="500"></div>
-      <div class="fg"><label class="fl">配位方式</label><select class="fs" id="al-method"><option value="priority">依滿額卡張數（多→少）</option><option value="order">依付款時間（先付先得）</option><option value="random">隨機抽籤</option></select></div>
-      <div class="fg"><label class="fl">顯示方式</label><select class="fs" id="al-show"><option value="name">社群帳號</option><option value="phone">電話遮蔽版</option></select></div>
-      <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="runAlloc()">✨ 執行配位</button>
+    <div class="card" style="margin-bottom:0;"><div class="card-head"><span class="card-title">Allocation Settings</span></div><div class="card-body"><div class="gg">
+      <div class="fg"><label class="fl">Select Campaign</label><select class="fs" id="al-camp"><option value="">-- 全部已付款 --</option></select></div>
+      <div class="fg"><label class="fl">Total Slots</label><input class="fi" id="al-slots" type="number" value="10" min="1" max="500"></div>
+      <div class="fg"><label class="fl">Allocation Method</label><select class="fs" id="al-method"><option value="priority">By Amount (依金額)</option><option value="order">By Time (依時間)</option><option value="random">Random (隨機)</option></select></div>
+      <div class="fg"><label class="fl">Display Format</label><select class="fs" id="al-show"><option value="name">Social Name</option><option value="phone">Phone (masked)</option></select></div>
+      <button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="runAlloc()">Execute Allocation</button>
     </div></div></div>
-    <div class="card" style="margin-bottom:0;"><div class="card-head"><span class="card-title">📊 統計</span></div><div class="card-body">
+    <div class="card" style="margin-bottom:0;"><div class="card-head"><span class="card-title">Statistics</span></div><div class="card-body">
       <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px;"><span style="color:var(--mid);">已配位</span><span id="al-stat" style="color:var(--green);font-weight:700;">0 / 0</span></div>
       <div class="prog"><div class="prog-bar" id="al-prog" style="width:0%"></div></div>
-      <div style="margin-top:14px;font-size:.82rem;color:var(--dim);line-height:2;"><div>📋 自動抓取「原幣加總 ≥ 門檻」的已付款訂單</div><div>🔒 遮蔽版本保護買家隱私</div><div>✅ 一鍵複製或匯出 CSV</div></div>
     </div></div>
   </div>
-  <div class="card"><div class="card-head"><span class="card-title" id="al-title">配位結果</span><div style="display:flex;gap:8px;"><button class="btn btn-ghost btn-sm" onclick="copyAllocResult()">📋 複製</button><button class="btn btn-ghost btn-sm" onclick="exportAllocCSV()">📥 匯出 CSV</button></div></div><div class="card-body"><div id="al-grid" class="alloc-grid"><div class="empty" style="grid-column:1/-1;"><div class="empty-ico">✨</div><div style="font-size:.85rem;">設定後點擊「執行配位」</div></div></div></div></div>
+  <div class="card"><div class="card-head"><span class="card-title" id="al-title">Allocation List</span><div style="display:flex;gap:8px;"><button class="btn btn-ghost btn-sm" onclick="copyAllocResult()">📋 Copy</button><button class="btn btn-ghost btn-sm" onclick="exportAllocCSV()">📥 Export CSV</button></div></div><div class="card-body"><div id="al-grid" class="alloc-grid"><div class="empty" style="grid-column:1/-1;"><div class="empty-ico">✨</div><div style="font-size:.85rem;">設定後點擊「Execute Allocation」</div></div></div></div></div>
 </div>
-</div></div>
+
+</div><!-- .wrap -->
+</div><!-- #main-content -->
 <div class="notif" id="notif"></div>
+
+<script>
+/* ══ THEME TOGGLE ══ */
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-btn').textContent=isDark?'☀️':'🌙';
+  localStorage.setItem('twt-theme',isDark?'light':'dark');
+}
+(function(){const saved=localStorage.getItem('twt-theme');if(saved){document.documentElement.setAttribute('data-theme',saved);document.addEventListener('DOMContentLoaded',()=>{document.getElementById('theme-btn').textContent=saved==='dark'?'🌙':'☀️';});}})();
+</script>
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbyt3fyRjxbKnqj_-Kv-cID41KV06-PlpJHs1td6PfpfL5wHReyXnpcyNfEISU9rRxHT_g/exec";
 const defaultColumns={open:"🟢 開團中",closed:"🔴 停止收單",arrived:"📦 理貨中",instock:"🛍️ 現貨/已有賣場"};
@@ -336,13 +451,20 @@ let allOrders=[], recResults=[], isFetchingOrders=false, currentAllocResults=[];
 function esc(s){if(s==null)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
 
 // ── 🛡️ API 封裝 ──
-async function apiGet(params=''){const url=params?API_URL+'?'+params:API_URL;const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}
+// ── API 封裝（支援本機 file:// 開啟）──
+async function apiGet(params=''){
+  const url=params?API_URL+'?'+params:API_URL;
+  const r=await fetch(url);
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return await r.json();
+}
 async function apiPost(payload){
   try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});if(!r.ok)throw new Error('HTTP '+r.status);try{return await r.json();}catch{return{success:true};}}
   catch(e){if(e.message.includes('Failed to fetch')||e.message.includes('NetworkError')||e.message.includes('CORS')){await fetch(API_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)});return{success:true,fallback:true};}throw e;}
 }
 
-// ── 登入 ──
+// ── 登入（後端驗證優先，本機 file:// 時 fallback 本地密碼）──
+const LOCAL_PWD='880818';
 async function verifyLogin(){
   const pwd=document.getElementById('adminPwd').value;if(!pwd)return;
   const loginOK=()=>{sessionStorage.setItem('isAdminAuth','true');document.getElementById('login-screen').style.display='none';initApp();};
@@ -352,6 +474,8 @@ async function verifyLogin(){
     if(r.success===true){loginOK();return;}
     loginFail();
   }catch(e){
+    // 後端不可達（file:// 或離線），使用本地密碼
+    if(pwd===LOCAL_PWD){loginOK();return;}
     loginFail();
   }
 }
@@ -769,4 +893,5 @@ function copyAllocResult(){if(!currentAllocResults.length){notify('尚無配位�
 function exportAllocCSV(){if(!currentAllocResults.length){notify('尚無配位結果','warn');return;}const showF=document.getElementById('al-show').value;const rows=currentAllocResults.map((o,i)=>{let d=showF==='name'?(o.socialName||'—'):(()=>{const p=String(o.phone).replace(/\D/g,'');return p.slice(0,3)+'****'+p.slice(-4);})();return[`#${i+1}`,d,o.priorityData];});const csv=[['順位','買家','滿額卡張數與排序'],...rows].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='配位結果.csv';a.click();}
 </script>
 </body>
+
 </html>
