@@ -13,7 +13,7 @@
   --mono:'JetBrains Mono','Fira Code',monospace;
   --r:14px; --r-sm:10px; --r-xs:6px;
   --accent:#c0392b; --accent-hi:#e74c3c; --accent-dim:rgba(192,57,43,.12);
-  --gold:#d4a017; --gold-dim:rgba(212,160,23,.12);
+  --gold:#00b140; --gold-dim:rgba(0,177,64,.12);
   --green:#27ae60; --green-dim:rgba(39,174,96,.12);
   --red:#c0392b; --red-dim:rgba(192,57,43,.1);
   --yellow:#f39c12; --yellow-dim:rgba(243,156,18,.1);
@@ -27,6 +27,7 @@
   --text:#f0ece4; --mid:#9a9489; --dim:#5a5650;
   --card-shadow:0 2px 12px rgba(0,0,0,.5);
   --topbar-bg:rgba(13,13,13,.92);
+  --gold:#7df725; --gold-dim:rgba(125,247,37,.15); --gold-active-text:#1a1a1a;
 }
 [data-theme="light"] {
   --bg:#f5f2ed; --s1:#ffffff; --s2:#faf8f5; --s3:#eee9e2;
@@ -34,6 +35,7 @@
   --text:#1a1a1a; --mid:#6b6560; --dim:#a09890;
   --card-shadow:0 2px 12px rgba(0,0,0,.08);
   --topbar-bg:rgba(245,242,237,.92);
+  --gold:#196116; --gold-dim:rgba(25,97,22,.1); --gold-active-text:#ffffff;
 }
 
 /* ══ RESET & BASE ══ */
@@ -141,6 +143,11 @@ input[type=number]{-moz-appearance:textfield;}
 /* ══ KANBAN ══ */
 .kanban{display:flex;gap:20px;overflow-x:auto;padding-bottom:12px;}
 .kol{flex:1;min-width:280px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:0;display:flex;flex-direction:column;box-shadow:var(--card-shadow);transition:var(--theme-transition);}
+[data-theme="dark"] .kol{border:2px solid #383838;}
+[data-theme="dark"] .admin-sec{border:2px solid #383838;}
+[data-theme="dark"] .card{border:2px solid #383838;}
+[data-theme="dark"] .camp-card{border:2px solid #333;}
+[data-theme="dark"] .list-item{border:2px solid #333;}
 .kol-head{font-size:.82rem;font-weight:800;padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-display);letter-spacing:.02em;}
 .kol-head::before{content:'';width:8px;height:8px;border-radius:50%;margin-right:8px;flex-shrink:0;}
 #zone-open{}.kol:nth-child(1) .kol-head::before{background:var(--green);}
@@ -240,7 +247,7 @@ input[type=number]{-moz-appearance:textfield;}
 .step-node:hover .step-dot{border-color:var(--gold);color:var(--gold);}
 .step-node.completed .step-dot{background:var(--bg);border-color:var(--gold);color:var(--gold);}
 .step-node.completed .step-label{color:var(--gold);}
-.step-node.active .step-dot{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 0 12px var(--gold-dim);transform:scale(1.15);}
+.step-node.active .step-dot{background:var(--gold);border-color:var(--gold);color:var(--gold-active-text);box-shadow:0 0 12px var(--gold-dim);transform:scale(1.15);font-weight:900;}
 .step-node.active .step-label{color:var(--text);font-weight:bold;}
 </style>
 </head>
@@ -440,7 +447,7 @@ function toggleTheme(){
 (function(){const saved=localStorage.getItem('twt-theme');if(saved){document.documentElement.setAttribute('data-theme',saved);document.addEventListener('DOMContentLoaded',()=>{document.getElementById('theme-btn').textContent=saved==='dark'?'🌙':'☀️';});}})();
 </script>
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbyt3fyRjxbKnqj_-Kv-cID41KV06-PlpJHs1td6PfpfL5wHReyXnpcyNfEISU9rRxHT_g/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbzpJML0Ihjc_hEzu-EIEXzt-c5eGVwyCInHtSSXbQGuUKbMCpLbTP6J05WqfUuGJ54/exec";
 const defaultColumns={open:"🟢 開團中",closed:"🔴 停止收單",arrived:"📦 理貨中",instock:"🛍️ 現貨/已有賣場"};
 let boardColumns=JSON.parse(localStorage.getItem('myBoardColumns'))||defaultColumns;
 let appData=JSON.parse(localStorage.getItem('myStoreDataV3'))||{};
@@ -655,22 +662,35 @@ function updateField(key,val){if(currentCampId)appData[currentCampId][key]=val;}
 // ── 滿額卡成員 ──
 function ensurePriority(){if(!appData[currentCampId].priorityMembers)appData[currentCampId].priorityMembers=[];}
 function renderPriorityTable(){
-  ensurePriority();const members=appData[currentCampId].priorityMembers;const isRandom=appData[currentCampId].isRandomPriority||false;const wrap=document.getElementById('priority-wrap');const total=members.length;
-  function buildOpts(cur){let o='<option value="">—</option>';for(let i=1;i<=total;i++)o+=`<option value="${i}"${cur==i?' selected':''}>${i}</option>`;return o;}
+  ensurePriority();const members=appData[currentCampId].priorityMembers;const isRandom=appData[currentCampId].isRandomPriority||false;const wrap=document.getElementById('priority-wrap');
   let h='';
-  if(members.length>0){h+=`<label style="display:flex;align-items:center;gap:8px;margin-bottom:15px;padding:12px;background:var(${isRandom?'--p-dim':'--s2'});border-radius:var(--r-sm);cursor:pointer;border:1px solid var(${isRandom?'--p':'--border'});transition:0.2s;"><input type="checkbox" id="admin-random-cb" onchange="toggleAdminRandom()" ${isRandom?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:var(--p);"><span style="font-weight:bold;font-size:0.95rem;">🎲 隨機分配 (不指定順位)</span></label>
-    <table class="priority-table"><thead><tr><th>成員名稱</th><th style="width:130px;text-align:center;">賣家自用備註</th><th style="width:70px;"></th></tr></thead>
-    <tbody>${members.map((m,i)=>`<tr style="opacity:${isRandom?'0.4':'1'};pointer-events:${isRandom?'none':'auto'};transition:0.2s;"><td><strong>${esc(m.name)}</strong></td><td style="text-align:center;"><select class="priority-select" id="psel-${i}" onchange="onPriorityChange(${i},this)" ${isRandom?'disabled':''}>${buildOpts(m.priority)}</select></td><td style="text-align:right;pointer-events:auto;opacity:1;"><button class="btn btn-r btn-xs" onclick="delPriorityMember(${i})">✕</button></td></tr>`).join('')}</tbody></table>`;}
+  if(members.length>0){h+=`<label style="display:flex;align-items:center;gap:8px;margin-bottom:15px;padding:12px;background:var(${isRandom?'--accent-dim':'--s2'});border-radius:var(--r-sm);cursor:pointer;border:1px solid var(${isRandom?'--accent':'--border'});transition:0.2s;"><input type="checkbox" id="admin-random-cb" onchange="toggleAdminRandom()" ${isRandom?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent);"><span style="font-weight:bold;font-size:0.95rem;">🎲 隨機分配 (不指定順位)</span></label>
+    <div id="priority-member-list" style="opacity:${isRandom?'0.4':'1'};pointer-events:${isRandom?'none':'auto'};">
+    ${members.map((m,i)=>`<div class="list-item" draggable="true" data-pri-idx="${i}" ondragstart="handlePriDragStart(event,${i})" ondragover="handleDragOver(event)" ondragenter="handlePriDragEnter(event)" ondragleave="handlePriDragLeave(event)" ondrop="handlePriDrop(event,${i})" ondragend="handlePriDragEnd(event)" style="cursor:grab;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="drag-h">☰</span>
+        <span style="font-weight:700;min-width:24px;color:var(--accent);">#${i+1}</span>
+        <strong>${esc(m.name)}</strong>
+      </div>
+      <button class="btn btn-r btn-xs" onclick="delPriorityMember(${i})">✕</button>
+    </div>`).join('')}
+    </div>`;}
   else{h=`<div class="empty" style="padding:20px;"><div class="empty-ico">🃏</div><div style="font-size:.85rem;">尚未新增成員</div></div>`;}
   h+=`<div style="display:flex;gap:10px;margin-top:15px;padding-top:15px;border-top:1px solid var(--border);"><input type="text" class="fi" id="newPriorityName" placeholder="輸入成員名稱" onkeydown="if(event.key==='Enter')addPriorityMemberInline()"><button class="btn btn-g" onclick="addPriorityMemberInline()">＋ 新增</button></div>`;
-  wrap.innerHTML=h;if(members.length>0&&!isRandom)validatePriorityDups();
+  wrap.innerHTML=h;
 }
+let priDragIdx=null;
+function handlePriDragStart(e,idx){priDragIdx=idx;e.dataTransfer.effectAllowed='move';setTimeout(()=>{if(e.target?.style)e.target.style.opacity='.4';},0);}
+function handlePriDragEnter(e){e.currentTarget.classList.add('drag-over');}
+function handlePriDragLeave(e){e.currentTarget.classList.remove('drag-over');}
+function handlePriDrop(e,targetIdx){e.stopPropagation();e.currentTarget.classList.remove('drag-over');if(priDragIdx!==null&&priDragIdx!==targetIdx){const members=appData[currentCampId].priorityMembers;const dragged=members.splice(priDragIdx,1)[0];members.splice(targetIdx,0,dragged);renderPriorityTable();}priDragIdx=null;return false;}
+function handlePriDragEnd(e){if(e?.target?.style)e.target.style.opacity='1';document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));priDragIdx=null;}
 function toggleAdminRandom(){ensurePriority();const isR=document.getElementById('admin-random-cb').checked;appData[currentCampId].isRandomPriority=isR;if(isR)appData[currentCampId].priorityMembers.forEach(m=>m.priority='');renderPriorityTable();}
 function addPriorityMemberInline(){ensurePriority();const n=document.getElementById('newPriorityName').value.trim();if(!n){notify('請輸入成員名稱','warn');return;}appData[currentCampId].priorityMembers.push({name:n,priority:''});renderPriorityTable();document.getElementById('newPriorityName').focus();}
 function delPriorityMember(i){appData[currentCampId].priorityMembers.splice(i,1);renderPriorityTable();}
 function onPriorityChange(i,sel){ensurePriority();appData[currentCampId].priorityMembers[i].priority=parseInt(sel.value)||'';validatePriorityDups();}
 function validatePriorityDups(){ensurePriority();const m=appData[currentCampId].priorityMembers;const c={};m.forEach(x=>{if(x.priority)c[x.priority]=(c[x.priority]||0)+1;});m.forEach((x,i)=>{const s=document.getElementById('psel-'+i);if(!s)return;if(x.priority&&c[x.priority]>1){s.classList.add('dup');s.title='⚠️ 順位重複';}else{s.classList.remove('dup');s.title='';}});}
-function copyPriorityResult(){ensurePriority();if(appData[currentCampId].isRandomPriority){navigator.clipboard.writeText("🎲 隨機分配").then(()=>notify('已複製隨機結果 ✓'));return;}const m=[...appData[currentCampId].priorityMembers].filter(x=>x.priority).sort((a,b)=>a.priority-b.priority);if(!m.length){notify('尚無排序資料','warn');return;}navigator.clipboard.writeText(m.map(x=>`#${x.priority} ${x.name}`).join('\n')).then(()=>notify('已複製排序結果 ✓'));}
+function copyPriorityResult(){ensurePriority();if(appData[currentCampId].isRandomPriority){navigator.clipboard.writeText("🎲 隨機分配").then(()=>notify('已複製隨機結果 ✓'));return;}const m=appData[currentCampId].priorityMembers;if(!m.length){notify('尚無排序資料','warn');return;}navigator.clipboard.writeText(m.map((x,i)=>`#${i+1} ${x.name}`).join('\n')).then(()=>notify('已複製排序結果 ✓'));}
 
 // ── 商品編輯 (含圖片上傳) ──
 function editItemInline(cat,idx){editingItem={cat,idx};renderCategories();}
@@ -684,21 +704,21 @@ function renderCategories(){
   for(const[catName,items]of Object.entries(cats)){let ih='';
     items.forEach((item,idx)=>{const isE=editingItem&&editingItem.cat===catName&&editingItem.idx===idx;
       const imgThumb=item.image?`<img src="${item.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;border:1px solid var(--border);margin-right:8px;">`:'';
-      if(isE){ih+=`<div class="list-item" style="border:1px solid var(--p);background:var(--s2);padding:10px 14px;cursor:default;" draggable="false"><div style="display:flex;gap:8px;width:100%;align-items:center;flex-wrap:wrap;">
-        <input type="text" class="fi" id="en_item" value="${esc(item.name)}" placeholder="商品名稱" style="flex:1;min-width:100px;padding:6px 10px;">
+      // 圖片管理按鈕（獨立於編輯模式）
+      const imgBtns=`<div style="display:flex;gap:4px;align-items:center;">
+        <label style="cursor:pointer;padding:2px 8px;background:var(--s3);border:1px solid var(--border);border-radius:var(--r-xs);font-size:.68rem;color:var(--mid);" title="上傳圖片">📷<input type="file" accept="image/*" style="display:none;" onchange="handleItemImage('${esc(catName)}',${idx},this)"></label>
+        ${item.image?`<button class="btn btn-r btn-xs" onclick="removeItemImage('${esc(catName)}',${idx})" style="padding:2px 6px;font-size:.6rem;" title="移除圖片">✕</button>`:''}
+      </div>`;
+      if(isE){ih+=`<div class="list-item" style="border:1px solid var(--accent);background:var(--s2);padding:10px 14px;cursor:default;" draggable="false"><div style="display:flex;gap:8px;width:100%;align-items:center;flex-wrap:wrap;">
+        <input type="text" class="fi" id="en_item" value="${esc(item.name)}" placeholder="商品名稱" style="flex:1;min-width:100px;padding:6px 10px;" onkeydown="if(event.key==='Enter')saveEditItem('${esc(catName)}',${idx})">
         <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:0.8rem;color:var(--mid);">NT$</span><input type="number" class="fi inp-price" id="ep_item" value="${item.price}" placeholder="台幣" style="width:70px;padding:6px 10px;"></div>
         <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:0.8rem;color:var(--mid);">原幣</span><input type="number" class="fi inp-price" id="eop_item" value="${item.origPrice||''}" placeholder="選填" style="width:70px;padding:6px 10px;"></div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <label style="cursor:pointer;padding:4px 10px;background:var(--s3);border:1px solid var(--border);border-radius:var(--r-xs);font-size:.72rem;color:var(--mid);">📷 圖片<input type="file" accept="image/*" style="display:none;" onchange="handleItemImage('${esc(catName)}',${idx},this)"></label>
-          ${item.image?`<img src="${item.image}" style="width:32px;height:32px;object-fit:cover;border-radius:4px;"><button class="btn btn-r btn-xs" onclick="removeItemImage('${esc(catName)}',${idx})" style="padding:2px 6px;">✕</button>`:''}
-        </div>
         <div style="display:flex;gap:5px;margin-left:auto;"><button class="btn btn-g btn-sm" onclick="saveEditItem('${esc(catName)}',${idx})">儲存</button><button class="btn btn-ghost btn-sm" onclick="cancelEditItem()">取消</button></div>
       </div></div>`;}
       else{const origStr=item.origPrice?`<span style="font-size:0.75rem;color:var(--dim);margin-left:4px;">(原幣: ${item.origPrice})</span>`:'';
         ih+=`<div class="list-item" draggable="true" ondragstart="handleItemDragStart(event,'${esc(catName)}',${idx})" ondragover="handleDragOver(event)" ondragenter="handleItemDragEnter(event)" ondragleave="handleItemDragLeave(event)" ondrop="handleItemDrop(event,'${esc(catName)}',${idx})" ondragend="handleDragEnd(event)">
         <div style="display:flex;align-items:center;gap:10px;">${imgThumb}<span class="drag-h">☰</span><div><strong>${esc(item.name)}</strong><span class="item-price">NT$ ${item.price} ${origStr}</span></div></div>
-        <div style="display:flex;gap:5px;"><button class="btn btn-b btn-xs" onclick="editItemInline('${esc(catName)}',${idx})">編輯</button><button class="btn btn-r btn-xs" onclick="delItem('${esc(catName)}',${idx})">✕</button></div></div>`;}});
-    // 區塊標題：正在編輯 vs 正常顯示
+        <div style="display:flex;gap:4px;align-items:center;">${imgBtns}<button class="btn btn-b btn-xs" onclick="editItemInline('${esc(catName)}',${idx})">編輯</button><button class="btn btn-r btn-xs" onclick="delItem('${esc(catName)}',${idx})">✕</button></div></div>`;}});
     const isEditingCat = editingCatName===catName;
     const catImg = appData[currentCampId]._catImages?.[catName];
     const catImgHtml = catImg ? `<img src="${catImg}" style="width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid var(--border);">` : '';
@@ -720,12 +740,30 @@ function renderCategories(){
         <button class="btn btn-r btn-xs" onclick="delCategory('${esc(catName)}')">刪除</button>
       </div>`;
     }
+    // 批次設定價格區塊
+    const batchRow=`<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;padding:8px 10px;background:var(--s3);border-radius:var(--r-xs);font-size:.78rem;">
+      <span style="color:var(--mid);white-space:nowrap;">批次設定：</span>
+      <input type="number" class="fi inp-price" id="bp_${catName}" placeholder="NT$" style="width:80px;padding:5px 8px;font-size:.8rem;">
+      <input type="number" class="fi inp-price" id="bop_${catName}" placeholder="原幣" style="width:80px;padding:5px 8px;font-size:.8rem;">
+      <button class="btn btn-b btn-xs" onclick="batchSetPrice('${esc(catName)}')">套用全部</button>
+    </div>`;
     container.innerHTML+=`<div class="admin-sec draggable-category" draggable="true" ondragstart="handleCatDragStart(event,'${esc(catName)}')" ondragover="handleDragOver(event)" ondragenter="handleCatDragEnter(event)" ondragleave="handleCatDragLeave(event)" ondrop="handleCatDrop(event,'${esc(catName)}')" ondragend="handleDragEnd(event)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">${catHeader}</div>
+      ${batchRow}
       <div style="margin-bottom:12px;">${ih}</div>
-      <div class="add-row"><input type="text" class="fi" id="nn_${catName}" placeholder="商品名稱"><input type="number" class="fi inp-price" id="np_${catName}" placeholder="台幣"><input type="number" class="fi inp-price" id="nop_${catName}" placeholder="原幣(選填)"><button class="btn btn-g btn-sm" onclick="addItem('${esc(catName)}')">＋</button></div>
+      <div class="add-row"><input type="text" class="fi" id="nn_${catName}" placeholder="商品名稱" onkeydown="if(event.key==='Enter')addItem('${esc(catName)}')"><input type="number" class="fi inp-price" id="np_${catName}" placeholder="台幣" onkeydown="if(event.key==='Enter')addItem('${esc(catName)}')"><input type="number" class="fi inp-price" id="nop_${catName}" placeholder="原幣(選填)" onkeydown="if(event.key==='Enter')addItem('${esc(catName)}')"><button class="btn btn-g btn-sm" onclick="addItem('${esc(catName)}')">＋</button></div>
     </div>`;
   }
+}
+// 批次設定價格
+function batchSetPrice(cat){
+  const p=parseInt(document.getElementById('bp_'+cat)?.value);
+  const op=parseInt(document.getElementById('bop_'+cat)?.value)||0;
+  if(isNaN(p)&&!op){notify('請至少輸入一個價格','warn');return;}
+  const items=appData[currentCampId].categories[cat];
+  items.forEach(item=>{if(!isNaN(p))item.price=p;if(op)item.origPrice=op;});
+  renderCategories();
+  notify(`已套用到「${cat}」的 ${items.length} 個商品 ✓`);
 }
 
 // ── 拖放：區塊 ──
